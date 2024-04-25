@@ -5,8 +5,8 @@
 
 Node.js 18+
 
+## Install
 
-## Usage
 
 #### Use NPM
 ```
@@ -16,6 +16,9 @@ npm i @nyarray/mashiro --save
 ```
 yarn add @nyarray/mashiro
 ```
+
+## Usage
+
 
 #### Import
 ```
