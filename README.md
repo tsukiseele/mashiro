@@ -9,11 +9,11 @@ Node.js 18+
 
 
 #### Use NPM
-```
+```sh
 npm i @nyarray/mashiro --save
 ```
 #### Use Yarn
-```
+```sh
 yarn add @nyarray/mashiro
 ```
 
@@ -21,13 +21,13 @@ yarn add @nyarray/mashiro
 
 
 #### Import
-```
+```js
 import { Mashiro, RulesLoader, RequestOptions } from '@nyarray/mashiro'
 ```
 
 #### Example
 
-``` js
+```js
 const siteAlias = 'chan-sankakucomplex' // or 'yande'......
 const rulesDir = path.join(__dirname, 'rules')
 const keyword = 'kani_biimu' // search keyword or tag
