@@ -17,6 +17,11 @@ npm i @nyarray/mashiro --save
 yarn add @nyarray/mashiro
 ```
 
+#### Import
+```
+import { Mashiro, RulesLoader, RequestOptions } from '@nyarray/mashiro'
+```
+
 #### Example
 
 ``` js
