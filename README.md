@@ -1,12 +1,12 @@
 # Mashiro
-### 开箱即用的网页内容抓取器
+### 基于配置的开箱即用的网页内容抓取库
 
-## Required - 需要
+## Required
 
 Node.js 18+
 
 
-## Usage - 使用
+## Usage
 
 #### Use NPM
 ```
