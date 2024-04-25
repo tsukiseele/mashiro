@@ -62,6 +62,9 @@ if (rule) {
 }
 ```
 
+![Example
+](https://github.com/tsukiseele/mashiro/blob/main/sample/sample_01.png?raw=true)
+
 ## License
 
 MIT LIcense
