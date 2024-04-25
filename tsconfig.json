@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "module": "ESNext",
+    "target": "ES2015",
+    "moduleResolution": "Node",
+    "noEmitOnError": true,
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
+    "types": ["node", "jest"],
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "out-tsc",
+    "rootDir": "./",
+    "allowJs": true,
+    "noImplicitAny": true
+  },
+  "include": [
+    "./src/**/*.ts",
+  ]
+}

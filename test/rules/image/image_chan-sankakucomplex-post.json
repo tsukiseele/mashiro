@@ -1,0 +1,69 @@
+{
+  "id": 903,
+  "version": 2,
+  "name": "Chan-SankakuComplex",
+  "author": "TsukiSeele",
+  "rating": "S",
+  "details": "Booru图库，收录ACGN插画，图片最全",
+  "flag": "",
+  "type": "image",
+  "icon": "https://chan.sankakucomplex.com/favicon.png",
+  "headers": {
+    "Referer": "https://chan.sankakucomplex.com/",
+    "Host": "chan.sankakucomplex.com",
+    "Cookie": "_sankakuchannel_session=kUY527sauPHa3nZlWW0xvPnW3FHeCqRkBvgTeekWKhl%2FaVODxCo%2Bfy67wevJ18Gy%2FEtQK8C%2BydIBI4y%2BvORH5xsw4lkgpvL0c0JIdR3HhgcYTbiPFQVUuwWea0TzQEv2hkRknAXjmFTaxccdJMzWqlwmmWjCFFZbxXJnSwAzTjYI%2FV3PAnLu7qZpd4qZiUXFDJTqyOOnW28TWK9nVbSr53jx4%2Fa%2FrGeSyFPCm1O56B9UxKR8Gr9LyjraNxQeS9QOP3DZH4gqH2Q1cHytV40LNsKq2Mh9kkyR3IpYfIjUKQIGY3emW5SxPLmBROPFRLKZ7LWiWVN61FLwjx1B5xzetLb%2BsZDlpTvWAlR1qrKblve2WVApWAnXgEsE6eTu8G6oJmbCshQhKtA8TCY07PUwLuREzf4taZmrKWblUhD4%2F2NiEr1UogzZlndM8rTCZExS27t%2B8EMdXAP69M2JMNdbvjBlRdhG3LUqq0pWXWRmDSTZ%2B3qMM3ipMyQXtI%2BgF6mm3g%3D%3D--bNcoEVHf9hVrCFxs--Kjic7V0%2By8Axe9h1otgiHA%3D%3D"
+  },
+  "sections": {
+    "home": {
+      "index": "https://chan.sankakucomplex.com/post?page={page:0}&limit=100",
+      "props": {
+        "title": {
+          "selector": "$(.posts-container post-preview img.post-preview-image).attr(id)",
+          "capture": "(?<=p)(.*)",
+          "replacement": "Sankaku $1"
+        },
+        "coverUrl": {
+          "selector": "$(.posts-container post-preview img.post-preview-image).attr(src)",
+          "capture": "(.*)",
+          "replacement": "https:$1"
+        },
+        "tags": {
+          "selector": "$(.posts-container post-preview img.post-preview-image).attr(data-auto_page)",
+          "capture": ".*(?=\\sRating)",
+          "replacement": "$0"
+        },
+        "$children": {
+          "selector": "$(.posts-container .post-preview-link).attr(href)",
+          "capture": "(.*)",
+          "replacement": "https://chan.sankakucomplex.com$1",
+          "props": {
+            "sampleUrl": {
+              "selector": "$(img#image).attr(src)",
+              "capture": "(.*)",
+              "replacement": "https:$1"
+            },
+            "largerUrl": {
+              "selector": "$(a#lowres).attr(href)",
+              "capture": "(.*)",
+              "replacement": "https:$1"
+            },
+            "originUrl": {
+              "selector": "$(a#highres).attr(href)",
+              "capture": "(.*)",
+              "replacement": "https:$1"
+            },
+            "datetime": {
+              "selector": "$(script#forum-posts-latest).html()",
+              "capture": "(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2}:\\d{2})",
+              "replacement": "$1 $2"
+            }
+          }
+        }
+      }
+    },
+    "search": {
+      "index": "https://chan.sankakucomplex.com/post?page={page:0}&limit=100&tags={keywords:}",
+      "reuse": "home"
+    }
+  }
+}

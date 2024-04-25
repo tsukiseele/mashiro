@@ -1,0 +1,43 @@
+{
+  "name": "mashiro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/mashiro.js",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18",
+    "npm": ">=8"
+  },
+  "scripts": {
+    "test": "jest",
+    "test-debug": "npm test -- --verbose=true",
+    "build": "npx rollup --config rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsukiseele/mashiro.git"
+  },
+  "author": "nyarray",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tsukiseele/mashiro/issues"
+  },
+  "homepage": "https://github.com/tsukiseele/mashiro#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.24.1",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.7",
+    "jest": "^29.7.0",
+    "rollup": "^4.16.4",
+    "rollup-plugin-dts": "^6.1.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.5"
+  }
+}
