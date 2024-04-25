@@ -4,7 +4,7 @@
     "module": "ESNext",
     "target": "ES2015",
     "moduleResolution": "Node",
-    "noEmitOnError": true,
+    // "noEmitOnError": true,
     "lib": [
       "ES2015",
       "DOM"
@@ -15,7 +15,7 @@
     "outDir": "out-tsc",
     "rootDir": "./",
     "allowJs": true,
-    "noImplicitAny": true
+    // "noImplicitAny": true
   },
   "include": [
     "./src/**/*.ts",

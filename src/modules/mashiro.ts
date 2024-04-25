@@ -13,14 +13,6 @@ const REG_KEYWORD_TEMPLATE = /\{keywords\s*?:\s*?(.*?)\}/i
 const REG_KEYWORD_MATCH = /\{keywords\s*?:.*?\}/i
 const REG_SELECTOR_TEMPLATE = /\$\((.*?)\)\.(\w+?)\((.*?)\)/
 
-// const config = {
-//   request: async (url: string, options: RequestOptions) => { 
-//     if (!fetch) throw new Error("fetch is not defined");
-//     const resp = await fetch(url, options)
-//     return resp.ok ? await resp.text() : ''
-//   }
-// }
-
 export declare interface RequestOptions {
   headers?: Headers
   timeout?: number
@@ -36,7 +28,7 @@ export default class Mashiro<T extends Meta> {
   //
   private request: ((url: string, options: RequestOptions) => Promise<string | undefined>) | undefined = undefined
 
-  private async defaultRequest(url: string, options: RequestOptions) { 
+  private async defaultRequestMethod(url: string, options: RequestOptions) { 
     if (!fetch) throw new Error("fetch is not defined");
     const resp = await fetch(url, options)
     return resp.ok ? await resp.text() : ''
@@ -60,8 +52,7 @@ export default class Mashiro<T extends Meta> {
     this.keywords = keywords
     return this
   }
-  setRequest(request: (url: string, options: RequestOptions) => Promise<string | undefined>): Mashiro<T> {
-    // this.request = request
+  setRequestMethod(request: (url: string, options: RequestOptions) => Promise<string | undefined>): Mashiro<T> {
     this.request = request
     return this
   }
@@ -188,15 +179,7 @@ export default class Mashiro<T extends Meta> {
    */
   private async requestText(url: string, options: RequestOptions): Promise<string | undefined> {
     // 如果已有传入请求，则使用传入的
-    // if (this.request) {
-    //   return await this.request(url, options || {})
-    // }
-    // const resp = await fetch(url, options)
-    // if (resp.ok) {
-    //   return await resp.text()
-    // }
-    // return ''
-    return this.request ? this.request(url, options) : this.defaultRequest(url, options)
+    return this.request ? this.request(url, options) : this.defaultRequestMethod(url, options)
   }
 
   /**
@@ -206,10 +189,6 @@ export default class Mashiro<T extends Meta> {
   getCurrentSection(): Section {
     if (!this.site) throw Error('site cannot be empty!')
     const section = this.keywords ? this.site.sections.search : this.site.sections.home
-    // 复用规则
-    // if (section.reuse) {
-    //   section.rules = this.site.sections[section.reuse].rules
-    // }
     return section
   }
 
