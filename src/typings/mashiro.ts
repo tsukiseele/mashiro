@@ -1,4 +1,9 @@
-interface Rules {
+declare interface RequestOptions {
+  headers?: Headers
+  timeout?: number
+}
+
+declare interface Rules {
   name: string
   id: number
   version: number
@@ -11,17 +16,17 @@ interface Rules {
   sections: Sections
 }
 
-interface Headers {
+declare interface Headers {
   [key: string]: string
 }
 
-interface Sections {
+declare interface Sections {
   [key: string]: Section
   home: Section
   search: Section
 }
 
-interface Section {
+declare interface Section {
   index: string
   reuse: string
   name?: string
@@ -29,27 +34,39 @@ interface Section {
   props: Props
 }
 
-interface Props {
+declare interface Props {
   [key: string]: Selector
   $children: ChildrenNode
 }
 
-interface ChildrenNode extends Selector {
+declare interface ChildrenNode extends Selector {
   flat?: boolean,
   props: Props
 }
 
-interface Selector {
+declare interface Selector {
   selector: string
   regex: string,
   capture?: string
   replacement?: string
 }
 
-interface Meta {
+declare interface Meta {
   children?: Meta[]
   $children?: string
   $site?: Rules
   $section?: Section
   [key: string]: any
+}
+
+export {
+  RequestOptions,
+  Rules,
+  Headers,
+  Sections,
+  Section,
+  Props,
+  ChildrenNode,
+  Selector,
+  Meta
 }

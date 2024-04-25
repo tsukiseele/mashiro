@@ -1,8 +1,9 @@
-import Mashiro from '../src/modules/mashiro';
-import RulesLoader from '../src/modules/rulesloader';
+import { Mashiro } from '../src/modules/mashiro';
+import { Meta } from '../src/typings/mashiro';
+import * as RulesLoader from '../src/modules/rulesloader';
 import { log, error, debug } from 'console'
-import fs from 'fs/promises'
 import path from 'path'
+import fs from 'fs/promises'
 
 const SECONDS = 1000;
 
@@ -23,7 +24,7 @@ it('tests', async () => {
   if (rule) {
     const mashiro = new Mashiro(rule)
     // 解析首页数据
-    let root: Meta[] = null
+    let root: Meta[] = []
     do {
       root = await mashiro
         .setPage(page++)

@@ -5,15 +5,14 @@ import pkg from './package.json' assert { type: 'json' };
 const version = pkg.version;
 const isProduction = process.env.NODE_ENV !== 'development';
 
-const config = [
+export default [
     {
         input: './src/main.ts',
         output: [
             {
-                file: 'dist/js/bundle.js',
-                // format: 'iife',
+                file: './dist/bundle.esm.js',
+                format: 'es',
                 sourcemap: true,
-                banner: `/*! ${version} */`
             }
         ],
         plugins: [
@@ -24,10 +23,8 @@ const config = [
         external: ['cheerio']
     },
     {
-        input: "./src/main.ts",
-        output: [{ file: "./lib/main.d.ts", format: "es" }],
+        input: ["./src/main.ts"],
+        output: [{ file: "./dist/bundle.d.ts", format: "es" }],
         plugins: [dts()]
-    }
+    },
 ]
-
-export default config;

@@ -1,9 +1,11 @@
 {
-  "name": "mashiro",
-  "version": "1.0.0",
+  "name": "@nyarray/mashiro",
+  "version": "1.0.10",
   "description": "",
-  "main": "./src/mashiro.js",
+  "main": "./dist/bundle.ems.js",
+  "module": "./dist/bundle.ems.js",
   "type": "module",
+  "types": "./dist/bundle.d.ts",
   "files": [
     "dist"
   ],

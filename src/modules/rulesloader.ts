@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises'
-import { readFileSync } from 'fs'
+import { Rules } from '../typings/mashiro'
 /**
  *
  * @param dir
@@ -105,7 +105,7 @@ function setDefaultHeaders(rules: Rules) {
   rules.headers = headers
 }
 
-export default {
+export {
   setDefaultHeaders,
   reuseRules,
   checkRules,

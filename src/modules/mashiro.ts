@@ -1,3 +1,4 @@
+
 /**
  * 站点内容解析器，通过加载JSON配置抓取网页内容，并封装成数据集
  *
@@ -6,19 +7,16 @@
  * @license MIT
  */
 import * as cheerio from 'cheerio'
-
+import { RequestOptions, Rules, Section, Props, Meta } from '../typings/mashiro'
 const REG_PAGE_TEMPLATE = /\{page\s*?:\s*?(-?\d*)[,\s]*?(-?\d*?)\}/i
 const REG_PAGE_MATCH = /\{page\s*?:.*?\}/i
 const REG_KEYWORD_TEMPLATE = /\{keywords\s*?:\s*?(.*?)\}/i
 const REG_KEYWORD_MATCH = /\{keywords\s*?:.*?\}/i
 const REG_SELECTOR_TEMPLATE = /\$\((.*?)\)\.(\w+?)\((.*?)\)/
 
-export declare interface RequestOptions {
-  headers?: Headers
-  timeout?: number
-}
 
-export default class Mashiro<T extends Meta> {
+
+export class Mashiro<T extends Meta> {
   // 当前抓取规则
   private site: Rules | undefined
   // 当前分页值
@@ -189,6 +187,7 @@ export default class Mashiro<T extends Meta> {
   getCurrentSection(): Section {
     if (!this.site) throw Error('site cannot be empty!')
     const section = this.keywords ? this.site.sections.search : this.site.sections.home
+
     return section
   }
 
