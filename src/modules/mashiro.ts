@@ -8,6 +8,7 @@
  */
 import * as cheerio from 'cheerio'
 import { RequestOptions, Rules, Section, Props, Meta } from '../typings/mashiro'
+import { DataSources, DataSourcesInfo } from './data_sources'
 const REG_PAGE_TEMPLATE = /\{page\s*?:\s*?(-?\d*)[,\s]*?(-?\d*?)\}/i
 const REG_PAGE_MATCH = /\{page\s*?:.*?\}/i
 const REG_KEYWORD_TEMPLATE = /\{keywords\s*?:\s*?(.*?)\}/i
@@ -26,7 +27,7 @@ export class Mashiro<T extends Meta> {
   //
   private request: ((url: string, options: RequestOptions) => Promise<string | undefined>) | undefined = undefined
 
-  private async defaultRequestMethod(url: string, options: RequestOptions) { 
+  private async defaultRequestMethod(url: string, options: RequestOptions) {
     if (!fetch) throw new Error("fetch is not defined");
     const resp = await fetch(url, options)
     return resp.ok ? await resp.text() : ''
@@ -65,55 +66,75 @@ export class Mashiro<T extends Meta> {
     if (!this.site) throw new Error('site cannot be empty!')
     const section = this.getCurrentSection()
     // 复用规则，现在已经在SiteLoader中处理
-    // if (section.reuse) {
-    //   section.rules = this.site.sections[section.reuse].rules
+    // if (section.include) {
+    //   section.rules = this.site.sections[section.include].rules
     // }
     const result = await this.parseRules(section.index, section.props)
     result.forEach((item) => {
-      item.$section = section
-      item.$site = this.site
+      // item.$section = section
+      // item.$site = this.site
+      item.dataSourcesInfo = new DataSourcesInfo(this.site!.id, section.name!)
     })
     if (isParseChildren && section.props.$children) {
       await this.parseChildrenOfList(result, section.props)
     }
     return result
   }
-  
+
   async parseChildrenOfList(list: T[], props: Props): Promise<void> {
-    await Promise.allSettled(list.map((item) => this.parseChildrenConcurrency(item, props)))
+    await Promise.allSettled(list.map((item) => this.parseChildrenConcurrency(item)))
   }
+
+
   /**
    * 解析Children，自动检测末尾，自动继承父级，自动拉平单项子级
    * @param {*} item
    * @param {*} props
    * @return {Promise<T extends Meta>}
    */
-  async parseChildrenConcurrency(item: T, props: Props, extend = true): Promise<T> {
-    if (item.$children && props.$children) {
-      let histroy: T[] = []
-      let page = 0
-      do {
-        const children = await this.parseRules(item.$children, props.$children.props, page++)
-        if (children && histroy && children.length && histroy.length && children.length === histroy.length && this.objectEquals(children[0], histroy[0])) break
-        histroy = JSON.parse(JSON.stringify(children))
-        if (children && children.length) {
-          // 解析下级子节点
-          if (children[0].$children) {
-            await Promise.allSettled(children.map((child) => this.parseChildrenConcurrency(child, props.$children.props)))
-          }
-          // 判断是否拉平子节点，否则追加到子节点下
-          if (props.$children.flat) {
-            Object.assign(item, children[0])
-            break
-          } else {
-            // 判断并继承父节点字段
-            // extend && children.forEach((child, index) => (children[index] = Object.assign({}, item, child)))
-            item.children ? item.children.push(...children) : (item.children = children)
-            break
-          }
-        }
-      } while (histroy && histroy.length)
+  async parseChildrenConcurrency(item: T, extend = true): Promise<T> {
+    if (!item.$children || !item.children) {
+      return Promise.resolve([] as any)
     }
+    const dataSourcesInfo = item.dataSourcesInfo;
+    const depth = dataSourcesInfo.depth || 0;
+    const dataSources = new DataSources(this.site!,
+      this.site?.sections[dataSourcesInfo.sectionName]!,
+      depth)
+    const section = dataSources.section;
+    const props = section.props;
+    let histroy: T[] = []
+    let page = 0
+    do {
+      const children = await this.parseRules(item.$children, item.$children.props, page++)
+      if (children && histroy &&
+        children.length && histroy.length &&
+        children.length == histroy.length &&
+        this.objectEquals(children[0], histroy[0])) {
+        break
+      }
+      histroy = JSON.parse(JSON.stringify(children))
+      // 解析下级子节点
+      if (children[0].$children) {
+        const newDataSourcesInfo = new DataSourcesInfo(
+          dataSourcesInfo.rulesId!, dataSourcesInfo.sectionName!,
+          depth + 1)
+        await Promise.allSettled(children.map((child) => {
+          child['dataSourcesInfo'] = newDataSourcesInfo
+          this.parseChildrenConcurrency(child)
+        }))
+      }
+      // 判断是否拉平子节点，否则追加到子节点下
+      if (props.$children.flat) {
+        Object.assign(item, children[0])
+        break
+      } else {
+        // 判断并继承父节点字段
+        // extend && children.forEach((child, index) => (children[index] = Object.assign({}, item, child)))
+        item.children ? item.children.push(...children) : (item.children = children)
+        break
+      }
+    } while (histroy && histroy.length)
     return item
   }
 

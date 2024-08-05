@@ -40,7 +40,7 @@
     },
     "search": {
       "index": "https://gelbooru.com/index.php?page=post&s=list&tags={keywords:}&pid={page:-1, 42}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

@@ -39,7 +39,7 @@
 
     "search": {
       "index": "https://booru.allthefallen.moe/posts?page={page:}&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

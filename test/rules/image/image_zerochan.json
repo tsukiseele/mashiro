@@ -40,7 +40,7 @@
     },
     "search": {
       "index": "https://www.zerochan.net/{keywords:}?p={page:0}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

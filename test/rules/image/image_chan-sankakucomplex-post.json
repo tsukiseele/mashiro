@@ -63,7 +63,7 @@
     },
     "search": {
       "index": "https://chan.sankakucomplex.com/post?page={page:0}&limit=100&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

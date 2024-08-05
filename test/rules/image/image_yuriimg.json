@@ -58,7 +58,7 @@
     },
     "search": {
       "index": "http://yuriimg.com/search/index/tags/{keywords:}/p/{page:0}.html()",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

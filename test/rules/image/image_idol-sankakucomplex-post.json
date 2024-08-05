@@ -52,7 +52,7 @@
     },
     "search": {
       "index": "https://idol.sankakucomplex.com/?tags={keywords:}&commit=Search&page={page:0}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

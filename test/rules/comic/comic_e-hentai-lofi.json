@@ -52,7 +52,7 @@
     },
     "search": {
       "index": "https://e-hentai.org/lofi/?f_search={keywords:}&page={page:-1}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

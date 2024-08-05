@@ -59,7 +59,7 @@
     },
     "search": {
       "index": "https://exhentai.org/?page={page:-1}&f_search={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

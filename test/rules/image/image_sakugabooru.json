@@ -49,7 +49,7 @@
     },
     "search": {
       "index": "https://www.sakugabooru.com/post?page={page:}&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

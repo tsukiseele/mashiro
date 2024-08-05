@@ -46,7 +46,7 @@
     },
     "search": {
       "index": "http://behoimi.org/post?tags={keywords:}&page={page:0}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

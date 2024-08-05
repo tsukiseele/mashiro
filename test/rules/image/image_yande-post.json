@@ -48,7 +48,7 @@
     },
     "search": {
       "index": "https://yande.re/post?page={page:0}&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

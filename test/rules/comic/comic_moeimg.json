@@ -36,7 +36,7 @@
     },
     "search": {
       "index": "http://moeimg.net/tag/{keywords:}/page/{page:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

@@ -41,7 +41,7 @@
     },
     "search": {
       "index": "http://www.minitokyo.net/{keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

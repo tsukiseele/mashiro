@@ -57,7 +57,7 @@
     },
     "search": {
       "index": "https://e-hentai.org/?f_search={keywords:}&page={page:-1}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

@@ -41,7 +41,7 @@
     },
     "search": {
       "index": "https://booru.eu/post/list/{keywords:}/{page:1}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

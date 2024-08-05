@@ -1,3 +1,5 @@
+import { DataSources, DataSourcesInfo } from '../modules/data_sources';
+
 declare interface RequestOptions {
   headers?: Headers
   timeout?: number
@@ -28,7 +30,7 @@ declare interface Sections {
 
 declare interface Section {
   index: string
-  reuse: string
+  include: string
   name?: string
   detail?: string
   props: Props
@@ -36,12 +38,6 @@ declare interface Section {
 
 declare interface Props {
   [key: string]: Selector
-  $children: ChildrenNode
-}
-
-declare interface ChildrenNode extends Selector {
-  flat?: boolean,
-  props: Props
 }
 
 declare interface Selector {
@@ -49,14 +45,17 @@ declare interface Selector {
   regex: string,
   capture?: string
   replacement?: string
+  flat?: boolean,
+  props: Props
 }
 
 declare interface Meta {
   children?: Meta[]
-  $children?: string
-  $site?: Rules
-  $section?: Section
+  dataSourcesInfo: DataSourcesInfo
   [key: string]: any
+  // $children?: string
+  // $site?: Rules
+  // $section?: Section
 }
 
 export {
@@ -66,7 +65,8 @@ export {
   Sections,
   Section,
   Props,
-  ChildrenNode,
   Selector,
-  Meta
+  Meta,
+  // DataSources,
+  // DataSourcesInfo
 }

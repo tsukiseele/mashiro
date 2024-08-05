@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "jest",
-    "test-debug": "npm test -- --verbose=true",
+    "test-debug": "npm run test -- --silent=false --detectOpenHandles",
     "build": "npx rollup --config rollup.config.js"
   },
   "repository": {

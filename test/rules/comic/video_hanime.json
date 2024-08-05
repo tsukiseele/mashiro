@@ -51,7 +51,7 @@
     },
     "search": {
       "index": "https://hanime1.me/search?query={keywords:}&genre=%E8%A3%8F%E7%95%AA&page={page:0}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

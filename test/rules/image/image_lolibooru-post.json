@@ -26,7 +26,7 @@
     },
     "search": {
       "index": "https://lolibooru.moe/post?tags={keywords:}&page={page:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

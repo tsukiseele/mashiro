@@ -56,7 +56,7 @@
     },
     "search": {
       "index": "https://rule34.xxx/index.php?tags={keywords:}&page=post&s=list&pid={page:-1,42}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

@@ -59,7 +59,7 @@
     },
     "search": {
       "index": "https://yande.re/pool?page={page:0}&query={keywords:}&commit=Search",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

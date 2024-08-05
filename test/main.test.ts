@@ -13,10 +13,11 @@ const SECONDS = 1000;
  * 
  * 可编写规则即可进行爬取绝大多数网站
  */
+
 it('tests', async () => {
-  const siteAlias = 'chan-sankaku'
+  const siteAlias = 'safebooru'
   const rulesDir = path.join(__dirname, 'rules')
-  const keyword = 'kani_biimu'
+  const keyword = 'ogipote'
   let page = 1
   // 抓取开始
   const rules = await RulesLoader.loadAllFromPath(rulesDir);

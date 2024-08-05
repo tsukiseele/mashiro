@@ -44,7 +44,7 @@
     },
     "search": {
       "index": "https://safebooru.org/index.php?tags={keywords:}&page=post&s=list&pid={page:-1,40}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

@@ -41,7 +41,7 @@
     },
     "search": {
       "index": "  https://www.mzitu.com/search/{keywords:}/page/{page:}/",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

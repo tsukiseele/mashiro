@@ -50,7 +50,7 @@
     },
     "search": {
       "index": "https://danbooru.donmai.us/posts?page={page:}&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }

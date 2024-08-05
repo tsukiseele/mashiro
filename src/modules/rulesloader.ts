@@ -46,7 +46,7 @@ async function loadFromPath(file: string): Promise<Rules | undefined> {
     // 注入默认请求头
     setDefaultHeaders(rules)
     // 复用规则
-    reuseRules(rules)
+    includeRules(rules)
     if (checkRules(rules)) return rules
   } catch (e) {
     console.warn(`JSON load failed: ${file}, Cause: ${(e as Error).message}`)
@@ -70,19 +70,23 @@ async function loadAllFromPath(dir: string): Promise<Rules[]> {
 function checkRules(rules: Rules) {
   if (!(rules && rules.sections)) throw new Error('Empty site rules!')
   const values = Object.values(rules.sections)
-  if (!(values && values.length && (values[0].props || values[0].reuse))) throw new Error('Invalid site rules!')
+  if (!(values && values.length && (values[0].props || values[0].include))) throw new Error('Invalid site rules!')
   return rules
 }
 
-function reuseRules(rules: Rules) {
+function includeRules(rules: Rules) {
   if (rules && rules.sections) {
     Object.entries(rules.sections).forEach(([, section]) => {
-      if (section && section.reuse && rules.sections[section.reuse]) {
-        section.props = rules.sections[section.reuse].props
+      if (section && section.include && rules.sections[section.include]) {
+        section.props = rules.sections[section.include].props
       }
     })
   }
   return rules
+}
+
+function getRulesById(rules: Rules[], id: number): Rules | undefined {
+  return rules.find(item => item.id == id)
 }
 
 /**
@@ -107,8 +111,9 @@ function setDefaultHeaders(rules: Rules) {
 
 export {
   setDefaultHeaders,
-  reuseRules,
+  includeRules,
   checkRules,
   loadFromPath,
   loadAllFromPath,
+  getRulesById,
 }

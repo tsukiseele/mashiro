@@ -74,7 +74,7 @@
     },
     "search": {
       "index": "https://konachan.com/post?page={page:0}&tags={keywords:}",
-      "reuse": "home"
+      "include": "home"
     }
   }
 }
