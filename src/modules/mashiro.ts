@@ -9,21 +9,30 @@
 import * as cheerio from 'cheerio'
 import { RequestOptions, Rules, Section, Props, Meta } from '../typings/mashiro'
 import { DataSources, DataSourcesInfo } from './data_sources'
-const REG_PAGE_TEMPLATE = /\{page\s*?:\s*?(-?\d*)[,\s]*?(-?\d*?)\}/i
-const REG_PAGE_MATCH = /\{page\s*?:.*?\}/i
-const REG_KEYWORD_TEMPLATE = /\{keywords\s*?:\s*?(.*?)\}/i
-const REG_KEYWORD_MATCH = /\{keywords\s*?:.*?\}/i
-const REG_SELECTOR_TEMPLATE = /\$\((.*?)\)\.(\w+?)\((.*?)\)/
 
+const REG = {
+  PAGE_TEMPLATE: /\{page\s*?:\s*?(-?\d*)[,\s]*?(-?\d*?)\}/i,
+  PAGE_MATCH: /\{page\s*?:.*?\}/i,
+  KEYWORD_TEMPLATE: /\{keywords\s*?:\s*?(.*?)\}/i,
+  KEYWORD_MATCH: /\{keywords\s*?:.*?\}/i,
+  SELECTOR_TEMPLATE: /\$\((.*?)\)\.(\w+?)\((.*?)\)/
+}
 
+export const SECTION_TYPE = {
+  HOME: 'home',
+  SEARCH: 'search'
+}
 
 export class Mashiro<T extends Meta> {
+
   // 当前抓取规则
   private site: Rules | undefined
   // 当前分页值
   private page: number = 1
   // 搜索关键字
-  private keywords: string | undefined = undefined
+  private keywords: string | undefined
+  // null 表示根据参数 keywords 自适应
+  private sectionName: string | null = null
   //
   private request: ((url: string, options: RequestOptions) => Promise<string | undefined>) | undefined = undefined
 
@@ -56,31 +65,49 @@ export class Mashiro<T extends Meta> {
     return this
   }
 
+  getDefaultSectionName(): string {
+    return this.keywords ? SECTION_TYPE.SEARCH : SECTION_TYPE.HOME
+  }
+
   /**
    * 解析Section对象，返回结果集
-   * @param {Section} section 站点板块
-   * @param {Number} deep 解析深度
-   * @return {Promise<<T extends Meta>[]>}
+   * @param {Object} options { isParseChildren: 是否解析子树 }
+   * @return {Promise<<T extends Meta>[]>} 的说法是
    */
-  async parseRoot(isParseChildren = false): Promise<T[]> {
+  async parseRoot(options = { isParseChildren: false }): Promise<T[]> {
     if (!this.site) throw new Error('site cannot be empty!')
-    const section = this.getCurrentSection()
-    // 复用规则，现在已经在SiteLoader中处理
+    this.sectionName = this.sectionName || this.getDefaultSectionName()
+    // 复用规则，现在已经在 RulesManager 中处理
     // if (section.include) {
     //   section.rules = this.site.sections[section.include].rules
     // }
-    const result = await this.parseRules(section.index, section.props)
+    return await this.parseSection(this.site, this.sectionName, { isParseChildren: true })
+  }
+
+  /**
+   * 
+   * @param rules 
+   * @param sectionName 
+   * @param options 
+   * @returns 
+   */
+  async parseSection(rules: Rules, sectionName: string, options = { isParseChildren: false }): Promise<T[]> {
+    const section = rules.sections[sectionName]
+    const result = await this.parseHtmlTemplate(section.index, section.props)
     result.forEach((item) => {
-      // item.$section = section
-      // item.$site = this.site
-      item.dataSourcesInfo = new DataSourcesInfo(this.site!.id, section.name!)
+      item.dataSourcesInfo = new DataSourcesInfo(rules.id, sectionName)
     })
-    if (isParseChildren && section.props.$children) {
+    if (options.isParseChildren && section.props.$children) {
       await this.parseChildrenOfList(result, section.props)
     }
     return result
   }
 
+  /**
+   * 
+   * @param list 
+   * @param props 
+   */
   async parseChildrenOfList(list: T[], props: Props): Promise<void> {
     await Promise.allSettled(list.map((item) => this.parseChildrenConcurrency(item)))
   }
@@ -93,20 +120,23 @@ export class Mashiro<T extends Meta> {
    * @return {Promise<T extends Meta>}
    */
   async parseChildrenConcurrency(item: T, extend = true): Promise<T> {
+    if (!this.site) {
+      throw Error('Rules not found!')
+    }
     if (!item.$children || !item.children) {
       return Promise.resolve([] as any)
     }
     const dataSourcesInfo = item.dataSourcesInfo;
     const depth = dataSourcesInfo.depth || 0;
-    const dataSources = new DataSources(this.site!,
-      this.site?.sections[dataSourcesInfo.sectionName]!,
+    const dataSources = new DataSources(this.site,
+      this.site.sections[dataSourcesInfo.sectionName],
       depth)
     const section = dataSources.section;
     const props = section.props;
     let histroy: T[] = []
     let page = 0
     do {
-      const children = await this.parseRules(item.$children, item.$children.props, page++)
+      const children = await this.parseHtmlTemplate(item.$children, item.$children.props, page++)
       if (children && histroy &&
         children.length && histroy.length &&
         children.length == histroy.length &&
@@ -116,11 +146,11 @@ export class Mashiro<T extends Meta> {
       histroy = JSON.parse(JSON.stringify(children))
       // 解析下级子节点
       if (children[0].$children) {
-        const newDataSourcesInfo = new DataSourcesInfo(
-          dataSourcesInfo.rulesId!, dataSourcesInfo.sectionName!,
+        const childDataSourcesInfo = new DataSourcesInfo(
+          dataSourcesInfo.rulesId, dataSourcesInfo.sectionName,
           depth + 1)
         await Promise.allSettled(children.map((child) => {
-          child['dataSourcesInfo'] = newDataSourcesInfo
+          child['dataSourcesInfo'] = childDataSourcesInfo
           this.parseChildrenConcurrency(child)
         }))
       }
@@ -144,7 +174,7 @@ export class Mashiro<T extends Meta> {
    * @param {Number} keywords 关键字
    * @returns {Promise<<T extends Meta>[]>}
    */
-  async parseRules(_url: string, props: Props, page: number = this.page, keywords: string | undefined = this.keywords): Promise<T[]> {
+  async parseHtmlTemplate(_url: string, props: Props, page: number = this.page, keywords: string | undefined = this.keywords): Promise<T[]> {
     if (!props) return []
     // 生成URL
     const url = this.replaceUrlTemplate(_url, page, keywords)
@@ -219,7 +249,7 @@ export class Mashiro<T extends Meta> {
    * @param {function} each
    */
   private selectEach($: cheerio.CheerioAPI, selector: string, each: (content: string, index: number) => void) {
-    const match = REG_SELECTOR_TEMPLATE.exec(selector)
+    const match = REG.SELECTOR_TEMPLATE.exec(selector)
     if (!match) return
     const s = {
       select: match[1],
@@ -272,15 +302,15 @@ export class Mashiro<T extends Meta> {
    * @returns {String} 真实URL
    */
   private replaceUrlTemplate(template: string, page: number, keywords?: string): string {
-    const pageMatch = REG_PAGE_TEMPLATE.exec(template)
-    const keywordMatch = REG_KEYWORD_TEMPLATE.exec(template)
+    const pageMatch = REG.PAGE_TEMPLATE.exec(template)
+    const keywordMatch = REG.KEYWORD_TEMPLATE.exec(template)
     // 获取默认keywords
     const _keywords = keywordMatch && keywordMatch[1] ? keywordMatch[1] : ''
     // 计算真实分页值
     page = pageMatch && pageMatch[1] ? page + parseInt(pageMatch[1]) : page
     page = pageMatch && pageMatch[2] ? page * parseInt(pageMatch[2]) : page
     // 生成真实URL
-    return template.replace(REG_PAGE_MATCH, page.toString()).replace(REG_KEYWORD_MATCH, keywords || _keywords)
+    return template.replace(REG.PAGE_MATCH, page.toString()).replace(REG.KEYWORD_MATCH, keywords || _keywords)
   }
   /**
    * 对象比较

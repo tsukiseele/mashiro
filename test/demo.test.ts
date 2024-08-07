@@ -1,6 +1,10 @@
 import path from 'path'
 import fs from 'fs/promises'
 import { log, error, debug } from 'console'
+
+it('test', async () => {
+  expect(true).toBe(true)
+})
 /*
 it('test', async () => {
   const files = await fs.readdir('E:/Games/COM3D2/Mod/__Append__', { recursive: true })
@@ -24,4 +28,6 @@ it('test', async () => {
 
   expect(true).toBe(true)
 
-}, 1000 * 60 * 60 * 24)*/
+}, 1000 * 60 * 60 * 24)
+
+*/

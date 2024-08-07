@@ -26,23 +26,26 @@ it('tests', async () => {
     const mashiro = new Mashiro(rule)
     // 解析首页数据
     let root: Meta[] = []
+    log('START!!!');
+
     do {
       root = await mashiro
         .setPage(page++)
         .setKeywords(keyword)
-        .parseRoot()
+        .parseRoot({ isParseChildren: true })
       // 解析子节点树
-      for (const node of root) {
-        if (node && node.$section) {
-          await mashiro.parseChildrenConcurrency(node, node.$section.props)
-          log(node)
-        }
-      }
-      log(root.map(item => ({
-        title: item['title'],
-        coverUrl: item['coverUrl'],
-        children: item['$children']
-      })))
+      // for (const node of root) {
+      //   if (node && node.$section) {
+      //     await mashiro.parseChildrenConcurrency(node, node.$section.props)
+      //     log(node)
+      //   }
+      // }
+      // log(root.map(item => ({
+      //   title: item['title'],
+      //   coverUrl: item['coverUrl'],
+      //   children: item['$children']
+      // })))
+      log(root)
     } while (root && root.length)
   } else {
     error(`未匹配到规则: ${siteAlias}`)
